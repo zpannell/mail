@@ -22,8 +22,6 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  //console.log(document.querySelectorAll("input"))
-
   // Send email upon clicking submit button
   document.querySelector('#compose-form').onsubmit = function(event) {
     event.preventDefault();
@@ -33,7 +31,7 @@ function compose_email() {
         recipients: document.getElementById('compose-recipients').value,
         subject: document.getElementById('compose-subject').value,
         body: document.getElementById('compose-body').value,
-        read: 0
+        //read: false,
       })
     })
     .then(response => response.json())
@@ -58,7 +56,7 @@ function load_mailbox(mailbox) {
   })
   .then(response => response.json())
   .then(results => {
-    console.log(results);
+    //console.log(results);
     results.forEach((result) => {
       
       // Create and style div
@@ -171,6 +169,23 @@ function view_email(id) {
         })
       }
       load_mailbox('inbox');
+    })
+
+    // Make button reply emails
+    document.getElementById('reply-button').addEventListener('click', function() {   
+      compose_email();
+
+      // Create sender
+      document.querySelector('#compose-recipients').value = sender;
+
+      // Create subject
+      if (!subject.startsWith('Re: ')) {
+        subject = `Re: ${subject}`;
+      }
+      document.querySelector('#compose-subject').value = subject;
+
+      // Pre-fill body
+      document.querySelector('#compose-body').value = `\n\nOn ${timestamp} ${sender} wrote:\n\n${body}\n\n`;
     })
   })
 }
